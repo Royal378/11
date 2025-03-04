@@ -21,10 +21,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install openjdk-11-jdk
-          wget https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
-          unzip commandlinetools-linux-7302050_latest.zip -d android-sdk
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          unzip commandlinetools-linux-9477386_latest.zip -d android-sdk
           export ANDROID_HOME=$GITHUB_WORKSPACE/android-sdk
           export PATH=$ANDROID_HOME/cmdline-tools/bin:$PATH
+          yes | sdkmanager --licenses
           sdkmanager --install "platforms;android-31" "build-tools;31.0.0" "platform-tools"
 
       - name: Build APK
@@ -33,7 +34,7 @@ jobs:
           ./gradlew assembleDebug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4  # 최신 버전으로 변경
         with:
           name: APK
           path: app/build/outputs/apk/debug/app-debug.apk
