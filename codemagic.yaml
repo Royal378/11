@@ -13,9 +13,15 @@ workflows:
           export JAVA_HOME=$(/usr/libexec/java_home -v $JAVA_VERSION)
       - name: Extract project files
         script: |
-          unzip LSPosedHookModule.zip -d .
+          unzip -o LSPosedHookModule_Fixed.zip -d .
       - name: Install Gradle manually
         script: |
           curl -sS https://downloads.gradle-dn.com/distributions/gradle-$GRADLE_VERSION-bin.zip -o gradle.zip
           unzip -q gradle.zip
-          export PATH=$PWD/gradle-$GRADLE_VERSION/
+          export PATH=$PWD/gradle-$GRADLE_VERSION/bin:$PATH
+      - name: Build debug APK
+        script: |
+          cd LSPosedHookModule
+          gradle assembleDebug
+    artifacts:
+      - LSPosedHookModule/app/build/outputs/apk/debug/app-debug.apk
