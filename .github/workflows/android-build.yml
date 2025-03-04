@@ -9,14 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Force Checkout Repository (Fix Exit Code 128)
-        run: |
-          rm -rf .git
-          git init
-          git remote add origin https://github.com/Royal378/11.git
-          git fetch --depth=1 origin main
-          git reset --hard origin/main
-      
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Setup JDK
         uses: actions/setup-java@v1
         with:
@@ -26,10 +21,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install openjdk-11-jdk
+          mkdir -p $ANDROID_HOME/cmdline-tools/latest
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-          unzip commandlinetools-linux-9477386_latest.zip -d android-sdk
+          unzip commandlinetools-linux-9477386_latest.zip -d $ANDROID_HOME/cmdline-tools/latest/
           export ANDROID_HOME=$GITHUB_WORKSPACE/android-sdk
-          export PATH=$ANDROID_HOME/cmdline-tools/bin:$PATH
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
           yes | sdkmanager --licenses
           sdkmanager --install "platforms;android-31" "build-tools;31.0.0" "platform-tools"
 
