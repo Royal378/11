@@ -1,0 +1,39 @@
+name: Android APK Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Setup Android SDK
+        run: |
+          sudo apt-get update
+          sudo apt-get install openjdk-11-jdk
+          wget https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
+          unzip commandlinetools-linux-7302050_latest.zip -d android-sdk
+          export ANDROID_HOME=$GITHUB_WORKSPACE/android-sdk
+          export PATH=$ANDROID_HOME/cmdline-tools/bin:$PATH
+          sdkmanager --install "platforms;android-31" "build-tools;31.0.0" "platform-tools"
+
+      - name: Build APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: APK
+          path: app/build/outputs/apk/debug/app-debug.apk
