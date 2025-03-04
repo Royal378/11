@@ -9,9 +9,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
+      - name: Force Checkout Repository (Fix Exit Code 128)
+        run: |
+          rm -rf .git
+          git init
+          git remote add origin https://github.com/Royal378/11.git
+          git fetch --depth=1 origin main
+          git reset --hard origin/main
+      
       - name: Setup JDK
         uses: actions/setup-java@v1
         with:
@@ -34,7 +39,7 @@ jobs:
           ./gradlew assembleDebug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4  # 최신 버전으로 변경
+        uses: actions/upload-artifact@v4
         with:
           name: APK
           path: app/build/outputs/apk/debug/app-debug.apk
