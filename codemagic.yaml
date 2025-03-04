@@ -6,18 +6,16 @@ workflows:
     environment:
       vars:
         JAVA_VERSION: 17
-        GRADLE_VERSION: 7.5  # 사용할 Gradle 버전 지정
+        GRADLE_VERSION: 7.5
     scripts:
       - name: Set up Java
         script: |
           export JAVA_HOME=$(/usr/libexec/java_home -v $JAVA_VERSION)
+      - name: Extract project files
+        script: |
+          unzip LSPosedHookModule.zip -d .
       - name: Install Gradle manually
         script: |
           curl -sS https://downloads.gradle-dn.com/distributions/gradle-$GRADLE_VERSION-bin.zip -o gradle.zip
           unzip -q gradle.zip
-          export PATH=$PWD/gradle-$GRADLE_VERSION/bin:$PATH
-      - name: Build debug APK
-        script: |
-          gradle assembleDebug  # gradlew 대신 gradle 명령어 직접 실행
-    artifacts:
-      - app/build/outputs/apk/debug/app-debug.apk
+          export PATH=$PWD/gradle-$GRADLE_VERSION/
